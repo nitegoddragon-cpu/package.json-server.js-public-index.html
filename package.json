@@ -1,0 +1,10 @@
+{
+  "name": "hollowhaven-clip-forge-wan2-2",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hollowhaven Clip Forge secure server bridge for Wan 2.2 Animate 2 on WaveSpeedAI.",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=20" },
+  "dependencies": { "express": "^5.1.0", "multer": "^2.0.2" }
+}
