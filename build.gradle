@@ -1,0 +1,43 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.hollowhaven.remnant'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'com.hollowhaven.remnant'
+        minSdk 26
+        targetSdk 36
+        versionCode 11
+        versionName '2.6.0'
+    }
+
+    signingConfigs {
+        release {
+            def ks = System.getenv('HOLLOWHAVEN_KEYSTORE')
+            def kp = System.getenv('HOLLOWHAVEN_KEYSTORE_PASSWORD')
+            def ka = System.getenv('HOLLOWHAVEN_KEY_ALIAS')
+            def kap = System.getenv('HOLLOWHAVEN_KEY_PASSWORD')
+            if (ks && kp && ka && kap) {
+                storeFile file(ks)
+                storePassword kp
+                keyAlias ka
+                keyPassword kap
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            def ks = System.getenv('HOLLOWHAVEN_KEYSTORE')
+            if (ks) signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
