@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#100d18">
+  <meta name="description" content="A private, browser-based video clip stitcher. Arrange clips and export one video without uploading your footage.">
+  <title>Hollowhaven Clip Forge</title>
+  <style>
+    :root{color-scheme:dark;--bg:#100d18;--panel:#171321;--panel2:#211a2d;--line:#342a45;--ink:#f8f4ff;--muted:#b4a9c6;--violet:#b76cff;--violet2:#8e49e6;--mint:#9cf4d1;--warn:#ffce80;--danger:#ff899d;--radius:22px;--shadow:0 18px 50px #0004}
+    *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;background:radial-gradient(900px 500px at 10% -5%,#4a226b55,transparent 65%),radial-gradient(700px 500px at 100% 0%,#163d4a38,transparent 60%),var(--bg);color:var(--ink);font:16px/1.5 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+    button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}a{color:#d4a8ff;text-underline-offset:3px}.shell{max-width:1000px;margin:auto;padding:clamp(16px,3.5vw,34px);padding-bottom:50px}
+    header{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:0 0 28px}.brand{display:flex;align-items:center;gap:12px;min-width:0}.mark{display:grid;place-items:center;width:45px;height:45px;border-radius:15px;background:linear-gradient(140deg,#db9aff,#8050e9 60%,#38b9ad);color:#1a1025;font-size:24px;box-shadow:0 8px 26px #9d50f84a}.brand-name{font-family:Georgia,serif;font-size:clamp(21px,4vw,27px);letter-spacing:-.04em}.eyebrow{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.22em;font-weight:800}.local-chip{display:flex;align-items:center;gap:7px;border:1px solid #3a584b;background:#15251f;color:var(--mint);border-radius:999px;padding:7px 11px;font-size:12px;font-weight:750;white-space:nowrap}.dot{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px #9cf4d1}
+    .hero{padding:clamp(22px,5vw,40px);border:1px solid #4a345e;border-radius:30px;background:linear-gradient(130deg,#251630ed,#171321fa 64%);box-shadow:var(--shadow);position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:210px;height:210px;border:1px solid #c27dff2a;border-radius:50%;right:-75px;top:-92px;box-shadow:0 0 0 24px #c27dff08,0 0 0 52px #c27dff06;pointer-events:none}.hero h1{font:clamp(32px,6vw,52px)/1.05 Georgia,serif;letter-spacing:-.045em;margin:12px 0 12px;max-width:640px}.hero h1 span{color:#d1a0ff}.hero p{color:var(--muted);max-width:640px;margin:0 0 22px}.hero-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.btn{border:1px solid var(--line);border-radius:13px;padding:11px 15px;background:#211a2d;color:var(--ink);font-weight:750;transition:transform .15s,border-color .15s}.btn:active{transform:scale(.98)}.btn.primary{background:linear-gradient(135deg,#c988ff,#9355ed);border-color:#cb9aff;color:#170e20;box-shadow:0 7px 22px #9b55ed35}.btn.ghost{background:transparent}.btn.small{padding:7px 10px;font-size:13px;border-radius:10px}.btn.danger{color:#ffb1bc;border-color:#663342}.fine{font-size:12px;color:var(--muted)}
+    .layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:18px;margin-top:18px;align-items:start}.panel{border:1px solid var(--line);border-radius:var(--radius);background:#171321eb;box-shadow:0 12px 30px #0002;overflow:hidden}.panel-head{padding:20px 20px 14px;display:flex;align-items:start;justify-content:space-between;gap:10px}.panel h2{font:24px/1.15 Georgia,serif;letter-spacing:-.025em;margin:0 0 6px}.panel-head p{margin:0;color:var(--muted);font-size:13px}.count{background:#30213f;color:#e0c4ff;border:1px solid #573675;padding:5px 9px;border-radius:10px;font-size:12px;font-weight:800;white-space:nowrap}
+    .drop{margin:0 18px 18px;border:1.5px dashed #5a4375;border-radius:18px;background:#21182d99;padding:25px 17px;text-align:center;transition:.18s}.drop.dragover{border-color:var(--mint);background:#153026}.drop .upload-icon{font-size:28px;display:block;margin-bottom:5px}.drop strong{display:block}.drop p{color:var(--muted);font-size:13px;margin:5px 0 12px}.drop input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}.clip-list{padding:0 12px 12px;display:grid;gap:9px}.empty{margin:0 18px 18px;padding:28px 16px;text-align:center;color:var(--muted);border:1px solid #2f263c;border-radius:16px;background:#110e18}.empty .empty-icon{font-size:26px;margin-bottom:4px}.clip{display:grid;grid-template-columns:43px minmax(0,1fr) auto;gap:12px;align-items:center;border:1px solid #332a40;border-radius:15px;padding:12px;background:#1c1726;min-width:0}.clip-num{width:41px;height:41px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#3d2752,#262033);color:#e4c7ff;font-size:14px;font-weight:850}.clip-title{font-size:14px;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.clip-meta{font-size:12px;color:var(--muted);margin-top:2px}.clip-actions{display:flex;gap:5px;align-items:center}.icon-btn{display:grid;place-items:center;width:31px;height:33px;border:1px solid #40344f;background:#241e2f;color:#ddd0ef;border-radius:9px;font-size:15px}.icon-btn:disabled{opacity:.25}
+    .settings{padding:0 19px 20px}.field{display:grid;gap:7px;margin:0 0 14px}.field label{color:#ded3ed;font-size:13px;font-weight:750}.field select{width:100%;background:#100d18;border:1px solid #453554;border-radius:12px;padding:11px 12px;color:var(--ink);min-height:44px}.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.preview-box{margin:0 18px 15px;border-radius:15px;overflow:hidden;background:#08070b;border:1px solid #30283c;position:relative;aspect-ratio:16/9;display:grid;place-items:center}.preview-box video{width:100%;height:100%;object-fit:contain;max-height:440px;background:#08070b}.preview-placeholder{padding:15px;text-align:center;color:var(--muted);font-size:13px}.preview-placeholder b{display:block;color:#e9d9ff;font-size:16px;margin-bottom:4px}.clip-status{display:flex;justify-content:space-between;gap:10px;padding:0 19px 17px;font-size:12px;color:var(--muted)}
+    .export-wrap{padding:0 19px 19px}.progress-area{display:none;margin:0 0 12px}.progress-area.show{display:block}.progress-top{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);margin-bottom:7px}.progress{height:9px;background:#0c0a11;border-radius:99px;overflow:hidden;border:1px solid #32263f}.progress div{width:0;height:100%;background:linear-gradient(90deg,#a559ec,#df9aff,#79e1cb);transition:width .15s}.export-note{padding:12px;border-radius:12px;background:#221b2c;color:var(--muted);font-size:12px;margin-top:12px}.result{display:none;margin:0 19px 19px;padding:13px;border:1px solid #325648;border-radius:15px;background:#14221d}.result.show{display:block}.result h3{font-size:15px;margin:0 0 8px;color:var(--mint)}.result video{width:100%;border-radius:10px;background:#060606;max-height:280px}.result .btn{margin-top:10px;width:100%}.status-line{margin:0 18px 18px;padding:11px 13px;border-radius:12px;font-size:13px;display:none}.status-line.show{display:block}.status-line.info{background:#20192a;color:#d9c7ed;border:1px solid #3d2d50}.status-line.error{background:#301820;color:#ffb7c2;border:1px solid #6b3341}.status-line.success{background:#14261f;color:#a9f2ce;border:1px solid #315b49}
+    .below{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:14px}.mini-panel{border:1px solid var(--line);background:#171321c9;padding:18px;border-radius:18px}.mini-panel h3{font:20px Georgia,serif;margin:0 0 8px}.mini-panel p{font-size:13px;color:var(--muted);margin:0 0 12px}.link-stack{display:flex;gap:8px;flex-wrap:wrap}.pill-link{display:inline-flex;align-items:center;border:1px solid #49345e;background:#21182e;border-radius:999px;padding:7px 11px;font-size:12px;text-decoration:none}.pill-link:hover{border-color:#b76cff}.foot{margin:25px 0 0;text-align:center;color:#8e829e;font-size:12px}.foot strong{color:#c8b4dc}.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:760px){.layout{grid-template-columns:1fr}.hero{border-radius:24px}.panel-head{padding:18px 17px 13px}.drop{margin:0 14px 14px}.clip{grid-template-columns:38px minmax(0,1fr) auto;gap:9px;padding:10px}.clip-num{width:37px;height:38px}.icon-btn{width:30px}.settings,.export-wrap{padding-left:16px;padding-right:16px}.preview-box{margin-left:15px;margin-right:15px}.below{grid-template-columns:1fr}.local-chip{font-size:11px;padding:6px 8px}.brand{gap:9px}.mark{width:40px;height:40px}}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+  
+    /* Wan2.2 generation bridge: prompt preparation only, with explicit external-model state. */
+    .wan-bench{margin-top:18px;border:1px solid #4a345e;border-radius:24px;background:linear-gradient(130deg,#21172d,#171321 72%);box-shadow:0 12px 30px #0002;overflow:hidden}
+    .wan-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:21px 21px 14px}
+    .wan-head h2{font:26px/1.12 Georgia,serif;letter-spacing:-.025em;margin:6px 0}
+    .wan-head p{color:var(--muted);font-size:13px;max-width:690px;margin:0}
+    .wan-state{flex-shrink:0;border:1px solid #66522d;background:#2c2418;color:#ffdda1;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:800}
+    .wan-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(260px,.9fr);gap:16px;padding:0 20px 20px}
+    .wan-main,.wan-launch{border:1px solid #342a45;border-radius:16px;padding:15px;min-width:0;background:#110e19a8}
+    .wan-field{display:grid;gap:7px;margin-bottom:12px}
+    .wan-field label{font-size:13px;color:#e3d7f1;font-weight:750}
+    .wan-field textarea{width:100%;resize:vertical;min-height:84px;border:1px solid #493852;border-radius:12px;background:#0d0a12;color:var(--ink);padding:11px 12px;font:14px/1.5 ui-sans-serif,system-ui,sans-serif}
+    .wan-field textarea:focus,.wan-field select:focus{outline:2px solid #b76cff;outline-offset:2px}
+    .wan-field select{width:100%;min-width:0;background:#100d18;border:1px solid #453554;border-radius:12px;padding:10px;color:var(--ink);min-height:43px}
+    .wan-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .wan-actions{display:flex;flex-wrap:wrap;gap:8px}
+    .wan-launch h3{font:21px Georgia,serif;margin:0 0 8px}
+    .wan-launch p,.wan-help{font-size:13px;color:var(--muted);margin:0 0 11px}
+    .wan-steps{counter-reset:step;list-style:none;padding:0;margin:12px 0;display:grid;gap:8px}
+    .wan-steps li{counter-increment:step;display:flex;align-items:flex-start;gap:9px;color:#ded2ec;font-size:12px}
+    .wan-steps li:before{content:counter(step);display:grid;place-items:center;flex:0 0 23px;height:23px;border-radius:8px;background:#38264b;color:#e7caff;font-weight:850}
+    .wan-note{margin-top:12px;padding:11px;border-radius:11px;border:1px solid #4c3e2a;background:#241e17;color:#dfcfaa;font-size:12px}
+    .wan-status{display:none;margin-top:10px;border-radius:10px;padding:9px 11px;font-size:12px}
+    .wan-status.show{display:block}.wan-status.info{border:1px solid #49345e;background:#21182e;color:#d7c4eb}.wan-status.error{border:1px solid #6b3341;background:#301820;color:#ffb7c2}.wan-status.success{border:1px solid #315b49;background:#14261f;color:#a9f2ce}
+    .wan-field .prompt-output{min-height:150px}
+    @media(max-width:760px){.wan-head{display:grid;padding:18px 16px 13px}.wan-state{justify-self:start}.wan-grid{grid-template-columns:1fr;padding:0 14px 15px}.wan-row{grid-template-columns:1fr}.wan-main,.wan-launch{padding:13px}.wan-head h2{font-size:24px}}
+
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div class="brand"><div class="mark" aria-hidden="true">✦</div><div><div class="brand-name">Hollowhaven <span style="color:#d3a1ff">Clip Forge</span></div><div class="eyebrow">Motion studio · local edition</div></div></div>
+      <div class="local-chip"><span class="dot"></span> Private on this device</div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">Your clips, one story</div>
+      <h1>Shape the moment.<br><span>Forge one film.</span></h1>
+      <p>Bring in your AI-generated clips, arrange the order, choose a canvas, then export them as one video. Your source files stay in this browser session. No account or generator credits needed.</p>
+      <div class="hero-row"><button id="heroAdd" class="btn primary">＋ Add video clips</button><span class="fine">Best in Chrome on Android or desktop · WebM export</span></div>
+    </section>
+
+
+    <section class="wan-bench" aria-labelledby="realWanHeading">
+      <div class="wan-head">
+        <div><div class="eyebrow">Secure inference bridge</div><h2 id="realWanHeading">Remnant → Wan2.2 Animate 2</h2><p>Upload one Remnant reference image and one driving video. Clip Forge sends the files through the local server bridge, keeping your WaveSpeed key off the browser.</p></div>
+        <span class="wan-state" id="realWanState">CHECKING ENGINE…</span>
+      </div>
+      <div class="wan-grid">
+        <div class="wan-main">
+          <div class="wan-field"><label for="realImage">Remnant reference image</label><input id="realImage" type="file" accept="image/png,image/jpeg,image/webp" class="btn"></div>
+          <div class="wan-field"><label for="realVideo">Driving video</label><input id="realVideo" type="file" accept="video/*,.mp4,.webm,.mov,.m4v" class="btn"></div>
+          <div class="wan-row"><div class="wan-field"><label for="realResolution">Resolution</label><select id="realResolution"><option value="480p">480p · faster preview</option><option value="720p">720p · higher quality</option></select></div><div class="wan-field"><label for="realModeNote">Pipeline</label><select id="realModeNote"><option>Wan2.2 Animate 2 · motion transfer</option></select></div></div>
+          <div class="wan-field"><label for="realPrompt">Character / background prompt</label><textarea id="realPrompt" rows="4">Hollowhaven Remnant, preserve the exact established creature identity, anatomy, proportions, colors, face, vines, leaves, golden feathers and glowing core. Keep the complete creature visible and readable against a coherent natural Hollowhaven environment.</textarea></div>
+          <div class="wan-field"><label for="realMotion">Driving motion prompt</label><textarea id="realMotion" rows="3">Animate the Remnant naturally using the driving video's full-body motion. Preserve identity and anatomy. Keep the movement fluid, grounded, expressive and temporally consistent.</textarea></div>
+          <div class="wan-actions"><button id="realGenerate" class="btn primary">Generate Remnant video</button><button id="realCancel" class="btn ghost" style="display:none">Stop polling</button></div>
+          <div id="realStatus" class="wan-status" role="status" aria-live="polite"></div>
+        </div>
+        <aside class="wan-launch"><h3>Real pipeline</h3><ol class="wan-steps"><li>Select the Remnant reference art.</li><li>Select the driving motion video.</li><li>Clip Forge uploads both files to WaveSpeed storage through the server.</li><li>Wan2.2 Animate 2 generates the motion-transfer video.</li><li>The result appears here and can be downloaded or added to the timeline.</li></ol><div class="wan-note"><b>Key safety:</b> the API key stays on the server. Configure <code>WAVESPEED_API_KEY</code>; never put a real key in this HTML or GitHub.</div></aside>
+      </div>
+      <div id="realResult" class="result" style="margin-top:0"><h3>✓ Remnant animation ready</h3><video id="realResultVideo" controls playsinline></video><a id="realDownload" class="btn primary" style="display:block;text-align:center;text-decoration:none" download="hollowhaven-remnant-animation.mp4">Download animation</a></div>
+    </section>
+
+    <section class="wan-bench" aria-labelledby="wanHeading">
+      <div class="wan-head">
+        <div><div class="eyebrow">Open model workflow · Wan2.2</div><h2 id="wanHeading">Wan2.2 Generation Bench</h2><p>Prepare a focused text-to-video or image-to-video prompt, open the hosted generator, then bring its finished clip back into this timeline. It is a model bridge today, not a hidden API connection.</p></div>
+        <span class="wan-state">EXTERNAL ENGINE · NOT API-CONNECTED</span>
+      </div>
+      <div class="wan-grid">
+        <div class="wan-main">
+          <div class="wan-field"><label for="wanScene">Describe the shot</label><textarea id="wanScene" rows="3" placeholder="Example: A glowing forest guardian rises between ancient trees as fireflies drift through the mist."></textarea></div>
+          <div class="wan-row">
+            <div class="wan-field"><label for="wanMode">Generation mode</label><select id="wanMode"><option value="i2v">Image → video (animate reference art)</option><option value="t2v">Text → video (generate from prompt)</option></select></div>
+            <div class="wan-field"><label for="wanPreset">Hollowhaven prompt preset</label><select id="wanPreset"><option value="cinematic">Cinematic fantasy shot</option><option value="beast">Beast Core full-body reveal</option><option value="elements">Creature + elemental motion</option><option value="world">World / landscape fly-through</option><option value="character">Character animation</option></select></div>
+          </div>
+          <div class="wan-row">
+            <div class="wan-field"><label for="wanCamera">Camera movement</label><select id="wanCamera"><option value="slow push-in">Slow push-in</option><option value="smooth tracking shot">Smooth tracking shot</option><option value="gentle orbit">Gentle orbit</option><option value="slow cinematic pan">Slow cinematic pan</option><option value="locked camera">Locked camera</option></select></div>
+            <div class="wan-field"><label for="wanMotion">Motion strength</label><select id="wanMotion"><option value="subtle natural motion">Subtle and natural</option><option value="clear expressive motion" selected>Clear expressive motion</option><option value="bold dynamic motion">Bold and dynamic</option></select></div>
+          </div>
+          <div class="wan-actions"><button id="buildWanPrompt" class="btn">Build prompt</button><button id="copyWanPrompt" class="btn primary">Copy prompt</button><button id="downloadWanPrompt" class="btn ghost">Save .txt</button></div>
+          <div class="wan-field" style="margin:14px 0 0"><label for="wanPromptOutput">Prompt to paste into Wan2.2</label><textarea id="wanPromptOutput" class="prompt-output" rows="6" placeholder="Your prepared prompt will appear here. You can edit it before copying." spellcheck="true"></textarea></div>
+          <div id="wanStatus" class="wan-status" role="status" aria-live="polite"></div>
+        </div>
+        <aside class="wan-launch">
+          <h3>Generate with Wan2.2</h3>
+          <p>Wan2.2's official TI2V-5B model supports text-to-video and image-to-video at up to 720p/24fps. The repository documents a single-GPU run requiring about 24 GB VRAM for its 720p example.</p>
+          <div class="wan-actions">
+            <a class="btn primary" href="https://wan.video/" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Open Wan video ↗</a>
+            <a class="btn ghost" href="https://huggingface.co/Wan-AI/Wan2.2-TI2V-5B" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Model card ↗</a>
+            <a class="btn ghost" href="https://github.com/Wan-Video/Wan2.2" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Source code ↗</a>
+          </div>
+          <ol class="wan-steps"><li>Build and copy the prompt here.</li><li>Open Wan, choose the same generation mode, and upload your reference image for image-to-video.</li><li>Paste the prompt, generate, and download the resulting clip.</li><li>Return here and add the downloaded video to the clip sequence.</li></ol>
+          <div class="wan-note"><b>Integration status:</b> Generation is started on Wan's hosted site or your own GPU setup. This app does not yet call Wan's inference endpoint directly. No token or secret is exposed in the browser.</div>
+        </aside>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="panel" aria-labelledby="clipsHeading">
+        <div class="panel-head"><div><h2 id="clipsHeading">Clip sequence</h2><p>Use ↑ and ↓ to set the final playback order.</p></div><span class="count" id="clipCount">0 clips</span></div>
+        <div class="drop" id="dropZone">
+          <span class="upload-icon" aria-hidden="true">▧</span><strong>Drop videos here</strong><p>or choose clips from your device</p>
+          <input id="fileInput" type="file" accept="video/*,.mp4,.webm,.mov,.m4v,.mkv" multiple>
+          <button id="chooseFiles" class="btn small">Choose files</button>
+        </div>
+        <div id="status" class="status-line" role="status" aria-live="polite"></div>
+        <div id="emptyState" class="empty"><div class="empty-icon">▹</div><b>Your timeline is waiting</b><br>Add two or more videos to make your first sequence.</div>
+        <div id="clipList" class="clip-list"></div>
+        <div class="clip-status"><span id="durationLabel">Total length: 0:00</span><span id="sizeLabel">0 MB selected</span></div>
+      </section>
+
+      <section class="panel" aria-labelledby="outputHeading">
+        <div class="panel-head"><div><h2 id="outputHeading">Preview & export</h2><p>Set your final frame before stitching.</p></div></div>
+        <div class="preview-box" id="previewBox"><div class="preview-placeholder" id="previewPlaceholder"><b>Preview window</b>Add a clip, then tap its Preview button.</div><video id="sourcePreview" controls playsinline style="display:none"></video></div>
+        <div class="settings">
+          <div class="field"><label for="aspect">Output shape</label><select id="aspect"><option value="portrait">9:16 · TikTok / Reels / Shorts</option><option value="landscape">16:9 · YouTube / widescreen</option><option value="square">1:1 · Square post</option><option value="source">Use first clip's dimensions</option></select></div>
+          <div class="field-row"><div class="field"><label for="framing">Fit clips</label><select id="framing"><option value="contain">Fit · keep full image</option><option value="cover">Fill · crop edges</option></select></div><div class="field"><label for="quality">Quality</label><select id="quality"><option value="standard">Standard · 3 Mbps</option><option value="high" selected>High · 5 Mbps</option><option value="max">Maximum · 8 Mbps</option></select></div></div>
+        </div>
+        <div class="export-wrap">
+          <div id="progressArea" class="progress-area"><div class="progress-top"><span id="progressText">Preparing clips…</span><strong id="progressPct">0%</strong></div><div class="progress"><div id="progressFill"></div></div></div>
+          <button id="exportButton" class="btn primary" style="width:100%" disabled>Combine clips into one video</button>
+          <button id="cancelButton" class="btn ghost" style="width:100%;margin-top:8px;display:none">Stop export</button>
+          <div class="export-note">This first build exports <b>WebM</b> using your browser's built-in recorder. Export speed depends on your phone or computer; start with a few short clips.</div>
+        </div>
+        <div id="result" class="result"><h3>✓ Your combined video is ready</h3><video id="resultVideo" controls playsinline></video><a id="downloadLink" class="btn primary" style="display:block;text-align:center;text-decoration:none" download="hollowhaven-film.webm">Download combined video</a><div class="fine" id="resultMeta" style="margin-top:8px"></div></div>
+      </section>
+    </div>
+
+    <section class="below" aria-label="AI generation and next steps">
+      <article class="mini-panel"><h3>Bring in AI-generated footage</h3><p>Generate clips in a model of your choice, then bring them here to stitch. The generator and editor are separate, so you aren't locked to one provider.</p><div class="link-stack"><a class="pill-link" href="https://github.com/Wan-Video/Wan2.2" target="_blank" rel="noopener noreferrer">Wan 2.2 · open model ↗</a><a class="pill-link" href="https://github.com/reframe-oss/reframe" target="_blank" rel="noopener noreferrer">Reframe editor ↗</a></div></article>
+      <article class="mini-panel"><h3>What this version does</h3><p>It joins clips in sequence, keeps available audio, and records a single downloadable WebM file. It does not generate new footage or convert to MP4 yet. Those can be added as separate engines after the merge path is proven.</p><div class="link-stack"><a class="pill-link" href="https://github.com/etcyl/react-video-editor" target="_blank" rel="noopener noreferrer">React Video Editor ↗</a><button id="clearAll" class="btn small ghost">Clear session</button></div></article>
+    </section>
+    <p class="foot"><strong>Hollowhaven Clip Forge</strong> · Independent free-first prototype · Processing runs in your browser. Source files are not uploaded.</p>
+  </main>
+
+  <video id="renderVideo" playsinline preload="auto" style="position:fixed;width:2px;height:2px;opacity:.02;left:-10px;bottom:0;pointer-events:none" aria-hidden="true"></video>
+  <canvas id="renderCanvas" width="720" height="1280" style="position:fixed;width:1px;height:1px;left:-10px;bottom:0;opacity:0;pointer-events:none" aria-hidden="true"></canvas>
+
+  <script>
+  (() => {
+    'use strict';
+    const $ = id => document.getElementById(id);
+    const fileInput = $('fileInput'), dropZone = $('dropZone'), clipList = $('clipList'), emptyState = $('emptyState');
+    const exportButton = $('exportButton'), cancelButton = $('cancelButton'), statusBox = $('status');
+    const renderVideo = $('renderVideo'), canvas = $('renderCanvas'), ctx = canvas.getContext('2d', { alpha:false });
+    const sourcePreview = $('sourcePreview'), previewPlaceholder = $('previewPlaceholder');
+    let clips = [], nextId = 1, audioContext = null, mediaSource = null, audioRecordDestination = null, recording = false, cancelRequested = false;
+    let activeRecorder = null, currentObjectUrl = null, renderFrame = 0, chunks = [], outputUrl = null;
+
+    const supportsRecorder = typeof MediaRecorder !== 'undefined' && !!HTMLCanvasElement.prototype.captureStream;
+    if (!supportsRecorder) {
+      showStatus('This browser does not support local video export. Try the latest Chrome or Edge.', 'error');
+    }
+
+    function showStatus(message, kind='info') {
+      statusBox.textContent = message; statusBox.className = `status-line show ${kind}`;
+    }
+    function clearStatus() { statusBox.textContent=''; statusBox.className='status-line'; }
+    function timeText(seconds) {
+      if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
+      const n = Math.floor(seconds), h = Math.floor(n/3600), m = Math.floor((n%3600)/60), s = n%60;
+      return h ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `${m}:${String(s).padStart(2,'0')}`;
+    }
+    function mb(bytes) { return `${(bytes / (1024*1024)).toFixed(bytes > 1024*1024*100 ? 0 : 1)} MB`; }
+    function totalDuration() { return clips.reduce((sum,c)=>sum+(Number.isFinite(c.duration)?c.duration:0),0); }
+
+    function probe(file) {
+      return new Promise((resolve, reject) => {
+        const url = URL.createObjectURL(file), v = document.createElement('video');
+        v.preload='metadata'; v.muted=true; v.playsInline=true;
+        const cleanup=()=>{v.removeAttribute('src');v.load();URL.revokeObjectURL(url)};
+        v.onloadedmetadata=()=>{const meta={duration:Number.isFinite(v.duration)?v.duration:0,width:v.videoWidth||0,height:v.videoHeight||0};cleanup();resolve(meta)};
+        v.onerror=()=>{cleanup();reject(new Error('This video format or codec could not be read by the browser. Try MP4 (H.264) or WebM.'))};
+        v.src=url;
+      });
+    }
+    async function addFiles(files) {
+      const list = [...files].filter(f => f.type.startsWith('video/') || /\.(mp4|webm|mov|m4v|mkv|ogg)$/i.test(f.name));
+      if (!list.length) { showStatus('Choose video files to add.', 'error'); return; }
+      clearStatus();
+      let added=0, failed=0;
+      for (const file of list) {
+        if (clips.some(c=>c.file===file)) continue;
+        try {
+          const meta=await probe(file);
+          const clip={id:nextId++,file,url:URL.createObjectURL(file),name:file.name,duration:meta.duration,width:meta.width,height:meta.height,size:file.size};
+          clips.push(clip); added++;
+        } catch (e) { failed++; showStatus(`${file.name}: ${e.message}`, 'error'); }
+      }
+      renderClips(); updateSummary();
+      if (added && !failed) showStatus(`${added} clip${added===1?'':'s'} added. Reorder them before exporting.`, 'success');
+      else if (added) showStatus(`${added} clip(s) added. ${failed} file(s) could not be read.`, 'info');
+      fileInput.value='';
+    }
+    function renderClips() {
+      clipList.replaceChildren(); emptyState.style.display=clips.length?'none':'block';
+      $('clipCount').textContent=`${clips.length} clip${clips.length===1?'':'s'}`;
+      clips.forEach((clip,index)=>{
+        const row=document.createElement('div'); row.className='clip'; row.dataset.id=clip.id;
+        const num=document.createElement('div');num.className='clip-num';num.textContent=String(index+1).padStart(2,'0');
+        const info=document.createElement('div');info.style.minWidth='0';
+        const title=document.createElement('div');title.className='clip-title';title.title=clip.name;title.textContent=clip.name;
+        const meta=document.createElement('div');meta.className='clip-meta';meta.textContent=`${timeText(clip.duration)} · ${clip.width}×${clip.height} · ${mb(clip.size)}`;
+        info.append(title,meta);
+        const actions=document.createElement('div');actions.className='clip-actions';
+        const preview=makeAction('▶','Preview',()=>previewClip(clip)); preview.style.color='#d9b8ff';
+        const up=makeAction('↑','Move clip up',()=>moveClip(index,-1));up.disabled=index===0;
+        const down=makeAction('↓','Move clip down',()=>moveClip(index,1));down.disabled=index===clips.length-1;
+        const remove=makeAction('×','Remove clip',()=>removeClip(clip.id));remove.style.color='#ffacbb';
+        actions.append(preview,up,down,remove); row.append(num,info,actions);clipList.append(row);
+      });
+      exportButton.disabled=clips.length<1 || recording || !supportsRecorder;
+    }
+    function makeAction(glyph,label,fn){const b=document.createElement('button');b.type='button';b.className='icon-btn';b.textContent=glyph;b.title=label;b.setAttribute('aria-label',label);b.addEventListener('click',fn);return b;}
+    function updateSummary(){ $('durationLabel').textContent=`Total length: ${timeText(totalDuration())}`;const bytes=clips.reduce((s,c)=>s+c.size,0);$('sizeLabel').textContent=`${mb(bytes)} selected`; }
+    function moveClip(index,delta){const target=index+delta;if(target<0||target>=clips.length)return;[clips[index],clips[target]]=[clips[target],clips[index]];renderClips();updateSummary();}
+    function removeClip(id){const idx=clips.findIndex(c=>c.id===id);if(idx<0)return;URL.revokeObjectURL(clips[idx].url);clips.splice(idx,1);renderClips();updateSummary();if(!clips.length){sourcePreview.style.display='none';previewPlaceholder.style.display='block';}clearResult();clearStatus();}
+    function clearSession(){if(recording){showStatus('Stop the export before clearing the session.','error');return;} clips.forEach(c=>URL.revokeObjectURL(c.url));clips=[];renderClips();updateSummary();clearResult();clearStatus();sourcePreview.style.display='none';previewPlaceholder.style.display='block';}
+    function clearResult(){if(outputUrl){URL.revokeObjectURL(outputUrl);outputUrl=null;} $('result').classList.remove('show');$('resultVideo').removeAttribute('src');$('resultVideo').load();}
+    function previewClip(clip){if(currentObjectUrl){URL.revokeObjectURL(currentObjectUrl);currentObjectUrl=null;}sourcePreview.src=clip.url;sourcePreview.style.display='block';previewPlaceholder.style.display='none';$('previewBox').style.aspectRatio=clip.width&&clip.height?`${clip.width}/${clip.height}`:'16/9';sourcePreview.load();sourcePreview.play().catch(()=>{});}
+
+    $('heroAdd').addEventListener('click',()=>fileInput.click());$('chooseFiles').addEventListener('click',()=>fileInput.click());
+    fileInput.addEventListener('change',()=>addFiles(fileInput.files));
+    dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('dragover')});dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('dragover');if(e.dataTransfer?.files)addFiles(e.dataTransfer.files)});
+    $('clearAll').addEventListener('click',clearSession);
+
+    function setCanvasSize(){const mode=$('aspect').value;let w=720,h=1280;if(mode==='landscape'){w=1280;h=720}else if(mode==='square'){w=720;h=720}else if(mode==='source'&&clips[0]?.width&&clips[0]?.height){const ratio=clips[0].width/clips[0].height;if(ratio>=1){w=1280;h=Math.max(240,Math.round(1280/ratio))}else{h=1280;w=Math.max(240,Math.round(1280*ratio))}}canvas.width=w;canvas.height=h;}
+    function paintFrame(){ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);if(renderVideo.readyState>=2&&renderVideo.videoWidth&&renderVideo.videoHeight){const vw=renderVideo.videoWidth,vh=renderVideo.videoHeight,cw=canvas.width,ch=canvas.height;const mode=$('framing').value;let sx=0,sy=0,sw=vw,sh=vh,dx=0,dy=0,dw=cw,dh=ch;if(mode==='cover'){const scale=Math.max(cw/vw,ch/vh);sw=cw/scale;sh=ch/scale;sx=(vw-sw)/2;sy=(vh-sh)/2}else{const scale=Math.min(cw/vw,ch/vh);dw=vw*scale;dh=vh*scale;dx=(cw-dw)/2;dy=(ch-dh)/2}try{ctx.drawImage(renderVideo,sx,sy,sw,sh,dx,dy,dw,dh)}catch(e){}}if(recording)renderFrame=requestAnimationFrame(paintFrame);}
+    function waitForEvent(target,eventName,timeoutMs=15000){return new Promise((resolve,reject)=>{let finished=false;const done=(err)=>{if(finished)return;finished=true;clearTimeout(timer);target.removeEventListener(eventName,onEvent);target.removeEventListener('error',onError);err?reject(err):resolve()};const onEvent=()=>done();const onError=()=>done(new Error('The browser could not decode this clip while exporting.')) ;const timer=setTimeout(()=>done(new Error(`Timed out while waiting for ${eventName}.`)),timeoutMs);target.addEventListener(eventName,onEvent,{once:true});target.addEventListener('error',onError,{once:true});});}
+    async function loadForExport(clip){renderVideo.pause();renderVideo.removeAttribute('src');renderVideo.load();renderVideo.src=clip.url;renderVideo.muted=false;renderVideo.volume=1;await waitForEvent(renderVideo,'loadedmetadata',20000);if(!Number.isFinite(renderVideo.duration)||renderVideo.duration<=0)throw new Error(`Could not determine the length of ${clip.name}.`);}
+    function chooseMime(){const options=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];return options.find(t=>MediaRecorder.isTypeSupported(t))||'';}
+    function setProgress(pct,label){$('progressArea').classList.add('show');$('progressFill').style.width=`${Math.max(0,Math.min(100,pct))}%`;$('progressPct').textContent=`${Math.round(pct)}%`;$('progressText').textContent=label;}
+    async function ensureAudio(){if(!audioContext){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw new Error('Audio capture is not supported in this browser.');audioContext=new AC();mediaSource=audioContext.createMediaElementSource(renderVideo);audioRecordDestination=audioContext.createMediaStreamDestination();mediaSource.connect(audioContext.destination);mediaSource.connect(audioRecordDestination);}if(audioContext.state!=='running')await audioContext.resume();}
+    async function exportFilm(){
+      if(recording||!clips.length)return;
+      if(!supportsRecorder){showStatus('Video export is not supported in this browser. Try a recent version of Chrome or Edge.','error');return;}
+      clearResult();clearStatus();cancelRequested=false;recording=true;chunks=[];exportButton.disabled=true;cancelButton.style.display='block';setProgress(0,'Preparing canvas and audio…');
+      let recorder=null,stream=null,recordedBlob=null;
+      try{
+        setCanvasSize();await ensureAudio();
+        const videoStream=canvas.captureStream(30);stream=new MediaStream([...videoStream.getVideoTracks(),...audioRecordDestination.stream.getAudioTracks()]);
+        const mimeType=chooseMime();const rate=({standard:3000000,high:5000000,max:8000000})[$('quality').value]||5000000;
+        recorder=new MediaRecorder(stream,{...(mimeType?{mimeType}:{}),videoBitsPerSecond:rate,audioBitsPerSecond:128000});activeRecorder=recorder;
+        recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+        const recorderStopped=new Promise((resolve,reject)=>{recorder.onstop=resolve;recorder.onerror=e=>reject(new Error(e.error?.message||'Browser recorder failed.'))});
+        paintFrame();
+        await new Promise(r=>requestAnimationFrame(()=>r()));
+        recorder.start(500);
+        let elapsed=0;const planned=clips.reduce((s,c)=>s+c.duration,0)||1;
+        for(let i=0;i<clips.length;i++){
+          if(cancelRequested)break;
+          const clip=clips[i];setProgress((elapsed/planned)*100,`Clip ${i+1} of ${clips.length}: ${clip.name}`);
+          await loadForExport(clip);if(cancelRequested)break;
+          await new Promise((resolve,reject)=>{
+            let done=false;let timer=null;
+            const finish=(err)=>{if(done)return;done=true;clearInterval(timer);renderVideo.removeEventListener('ended',onEnded);renderVideo.removeEventListener('error',onError);err?reject(err):resolve()};
+            const onEnded=()=>finish();const onError=()=>finish(new Error(`Playback failed for ${clip.name}.`));
+            renderVideo.addEventListener('ended',onEnded,{once:true});renderVideo.addEventListener('error',onError,{once:true});
+            timer=setInterval(()=>{const at=Number.isFinite(renderVideo.currentTime)?renderVideo.currentTime:0;setProgress(((elapsed+at)/planned)*100,`Recording clip ${i+1} of ${clips.length} · ${timeText(elapsed+at)} / ${timeText(planned)}`);if(cancelRequested){renderVideo.pause();finish()}},250);
+            renderVideo.currentTime=0;renderVideo.play().catch(e=>finish(new Error(`Could not play ${clip.name}: ${e.message}`)));
+          });
+          elapsed+=clip.duration;
+        }
+        renderVideo.pause();
+        if(recorder.state!=='inactive')recorder.stop();
+        await recorderStopped;
+        if(cancelRequested){setProgress(0,'Export stopped');showStatus('Export stopped. Your source clips are still in the sequence.','info');return;}
+        recordedBlob=new Blob(chunks,{type:recorder.mimeType||'video/webm'});
+        if(!recordedBlob.size)throw new Error('The export completed without video data. Try shorter clips or a different browser.');
+        outputUrl=URL.createObjectURL(recordedBlob);$('resultVideo').src=outputUrl;$('resultVideo').load();$('downloadLink').href=outputUrl;$('downloadLink').download=`hollowhaven-film-${new Date().toISOString().slice(0,10)}.webm`;$('resultMeta').textContent=`${clips.length} clips · ${timeText(totalDuration())} planned duration · ${mb(recordedBlob.size)} · WebM`;$('result').classList.add('show');setProgress(100,'Film ready');showStatus('Your clips were combined into one downloadable WebM video.','success');
+      }catch(err){if(recorder&&recorder.state!=='inactive'){try{recorder.stop()}catch(e){}}showStatus(err?.message||'Export failed. Try fewer or shorter clips.','error');setProgress(0,'Export failed');}
+      finally{if(stream)stream.getTracks().forEach(t=>t.stop());if(renderFrame)cancelAnimationFrame(renderFrame);renderFrame=0;recording=false;activeRecorder=null;cancelButton.style.display='none';renderClips();}
+    }
+    exportButton.addEventListener('click',exportFilm);
+    cancelButton.addEventListener('click',()=>{cancelRequested=true;if(renderVideo&&!renderVideo.paused)renderVideo.pause();if(activeRecorder&&activeRecorder.state!=='inactive'){try{activeRecorder.stop()}catch(e){}}setProgress(0,'Stopping export…');});
+    $('aspect').addEventListener('change',()=>{if(!recording){setCanvasSize();}});
+    window.addEventListener('beforeunload',e=>{if(recording){e.preventDefault();e.returnValue='';}});
+
+    // Wan2.2 prompt preparation bridge. Hosted inference remains external until a secured backend is configured.
+    const wanScene = $('wanScene'), wanOutput = $('wanPromptOutput'), wanStatus = $('wanStatus');
+    function wanMessage(message, kind='info') {
+      wanStatus.textContent = message;
+      wanStatus.className = `wan-status show ${kind}`;
+    }
+    function prepareWanPrompt() {
+      const scene = wanScene.value.trim();
+      if (!scene) {
+        wanMessage('Describe the subject and action first, then build your Wan2.2 prompt.', 'error');
+        wanScene.focus();
+        return '';
+      }
+      const mode = $('wanMode').value;
+      const preset = $('wanPreset').value;
+      const camera = $('wanCamera').value;
+      const motion = $('wanMotion').value;
+      const modeInstruction = mode === 'i2v'
+        ? 'Animate the supplied reference image. Preserve the subject identity, silhouette, proportions, materials, face, key markings, and established design. Make a coherent continuous motion from the reference frame; do not redesign the subject.'
+        : 'Generate a single coherent video shot from the text description. Keep the main subject readable and visually consistent from the first frame to the last frame.';
+      const presets = {
+        cinematic: 'Cinematic fantasy photography, layered depth, intentional composition, rich but controlled lighting, detailed surfaces, natural physical movement, and a polished filmic finish.',
+        beast: 'Hollowhaven Beast Core reveal: keep the COMPLETE creature body visible and readable, with a clear head, torso, limbs, tail, wings, and other defining anatomy where present. Preserve the established creature silhouette and proportions. Let the creature itself move; do not replace its body with a rock, a cloud of particles, or a shapeless elemental effect. Keep the full body inside the frame with breathing room and reveal its form clearly.',
+        elements: 'The creature remains the physical anchor of the shot. Elemental energy stretches, streams, coils, pulses, or trails around and along the creature’s actual body, following its movement and anatomy. Show the body and the elemental mutation together; effects must enhance the creature rather than hide or replace it. Maintain stable anatomy and clear silhouettes throughout.',
+        world: 'Hollowhaven environment shot with strong foreground, middle ground, and distant depth. Let foliage, mist, water, clouds, magical lights, and environmental elements move naturally. Keep geography coherent and use the camera move to reveal the world rather than making the environment melt or distort.',
+        character: 'Maintain character identity and costume details across the whole shot. Use natural body mechanics, clear readable gestures, stable face and hands, believable weight, and consistent lighting. Keep movement motivated and avoid sudden shape changes.'
+      };
+      const common = `Camera movement: ${camera}. Motion level: ${motion}. Use smooth temporal continuity, stable subject identity, coherent movement, clean detail, and consistent lighting. Avoid flicker, duplicated limbs, warping, sudden cuts, unintended text, captions, watermarks, or logos.`;
+      const prompt = `${scene}\n\n${modeInstruction}\n\n${presets[preset]}\n\n${common}`;
+      wanOutput.value = prompt;
+      wanMessage('Prompt prepared. Copy it, generate on Wan, then import the finished video above.', 'success');
+      return prompt;
+    }
+    $('buildWanPrompt').addEventListener('click', prepareWanPrompt);
+    $('copyWanPrompt').addEventListener('click', async () => {
+      const prompt = wanOutput.value.trim() || prepareWanPrompt();
+      if (!prompt) return;
+      try {
+        await navigator.clipboard.writeText(prompt);
+        wanMessage('Prompt copied. Open Wan2.2 and paste it into the prompt field.', 'success');
+      } catch (err) {
+        wanOutput.focus();
+        wanOutput.select();
+        const ok = document.execCommand && document.execCommand('copy');
+        wanMessage(ok ? 'Prompt copied. Open Wan2.2 and paste it into the prompt field.' : 'Prompt is ready. Select the text above and copy it manually.', ok ? 'success' : 'info');
+      }
+    });
+    $('downloadWanPrompt').addEventListener('click', () => {
+      const prompt = wanOutput.value.trim() || prepareWanPrompt();
+      if (!prompt) return;
+      const blob = new Blob([prompt], {type:'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'hollowhaven-wan2.2-prompt.txt';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      wanMessage('Prompt text file downloaded.', 'success');
+    });
+
+    // Real WaveSpeed / Wan2.2 Animate 2 bridge.
+    const realImage=$('realImage'), realVideo=$('realVideo'), realGenerate=$('realGenerate'), realCancel=$('realCancel'), realStatus=$('realStatus'), realState=$('realWanState'), realResult=$('realResult'), realResultVideo=$('realResultVideo'), realDownload=$('realDownload');
+    let realPolling=false;
+    function realMsg(msg,kind='info'){realStatus.textContent=msg;realStatus.className=`wan-status show ${kind}`;}
+    async function checkEngine(){try{const r=await fetch('/api/health');const d=await r.json();if(d.configured){realState.textContent='ENGINE READY';realState.style.borderColor='#315b49';realState.style.background='#14261f';realState.style.color='#a9f2ce';}else realState.textContent='SERVER KEY NEEDED';}catch(e){realState.textContent='BRIDGE OFFLINE';}}
+    async function waitForWan(id){realPolling=true;realCancel.style.display='inline-block';let delay=2000;while(realPolling){const r=await fetch(`/api/result/${encodeURIComponent(id)}`);const d=await r.json();if(!r.ok)throw new Error(d.error||`Polling failed (${r.status})`);if(d.status==='completed'){realPolling=false;realCancel.style.display='none';return d.outputs?.[0]||d.output?.[0]||d.output;}if(['failed','cancelled','timeout','deleted'].includes(d.status))throw new Error(d.error||`Wan task ${d.status}`);realMsg(`Wan2.2 is ${d.status||'processing'}…`, 'info');await new Promise(r=>setTimeout(r,delay));delay=Math.min(10000,Math.round(delay*1.35));}throw new Error('Polling stopped.');}
+    realCancel.addEventListener('click',()=>{realPolling=false;realCancel.style.display='none';realMsg('Polling stopped. The remote task may still be running.','info');});
+    realGenerate.addEventListener('click',async()=>{if(!realImage.files[0]||!realVideo.files[0]){realMsg('Select both the Remnant reference image and driving video first.','error');return;}realGenerate.disabled=true;realMsg('Uploading reference image and driving video…','info');try{const fd=new FormData();fd.append('image',realImage.files[0]);fd.append('video',realVideo.files[0]);fd.append('resolution',$('realResolution').value);fd.append('prompt',$('realPrompt').value);fd.append('motion_prompt',$('realMotion').value);const r=await fetch('/api/generate',{method:'POST',body:fd});const d=await r.json();if(!r.ok)throw new Error(d.error||`Generation failed (${r.status})`);realMsg(`Task ${d.id} submitted. Waiting for Wan2.2…`,'info');const out=await waitForWan(d.id);if(!out)throw new Error('Wan completed but returned no output URL.');realResultVideo.src=out;realResultVideo.load();realDownload.href=out;realResult.classList.add('show');realMsg('Remnant animation is ready.','success');}catch(e){realMsg(e.message||'Generation failed.','error');}finally{realGenerate.disabled=false;realCancel.style.display='none';}});
+    checkEngine();
+
+    renderClips();updateSummary();setCanvasSize();
+    if(!supportsRecorder)exportButton.disabled=true;
+  })();
+  </script>
+</body>
+</html>
